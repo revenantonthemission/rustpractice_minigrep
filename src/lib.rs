@@ -24,7 +24,9 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     //fs::read_to_string 함수를 사용해 파일을 열고 std::io::Result<String>을 반환한다. ? 연산자를 통해 현재의 함수로부터 에러 값을 받을 수 있다.
     let contents = fs::read_to_string(config.file_path)?;
 
-    println!("With text:\n{contents}");
+    for line in search(&config.query, &contents) {
+        println!("{line}");
+    }
 
     Ok(())
 }

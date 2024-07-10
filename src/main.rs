@@ -15,9 +15,6 @@ fn main() {
         process::exit(1);
     });
 
-    println!("Searching for {}", config.query);
-    println!("In file {}", config.file_path);
-
     //실행 파트를 run으로 분리.
     if let Err(e) = minigrep::run(config) {
         println!("Application error: {e}");
