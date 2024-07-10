@@ -1,9 +1,11 @@
 use std::error::Error;
 use std::fs;
+use std::env;
 
 pub struct Config {
     pub query: String,
     pub file_path: String,
+    pub ignore_case: bool,
 }
 
 //Result를 통해 에러 처리
@@ -14,7 +16,11 @@ impl Config {
         }
         let query = args[1].clone();
         let file_path = args[2].clone();
-        Ok(Config { query, file_path })
+        
+        //환경 변수 검사
+        let ignore_case = env::var("IGNORE_CASE").is_ok();
+
+        Ok(Config { query, file_path, ignore_case, })
     }
 }
 
@@ -24,8 +30,14 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     //fs::read_to_string 함수를 사용해 파일을 열고 std::io::Result<String>을 반환한다. ? 연산자를 통해 현재의 함수로부터 에러 값을 받을 수 있다.
     let contents = fs::read_to_string(config.file_path)?;
 
-    for line in search(&config.query, &contents) {
-        println!("{line}");
+    let results = if config.ignore_case {
+      search_case_insensitive(&config.query, &contents)
+    } else {
+      search(&config.query, &contents)
+    };
+
+    for line in results {
+      println!("{line}");
     }
 
     Ok(())
