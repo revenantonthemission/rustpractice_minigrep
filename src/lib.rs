@@ -29,12 +29,19 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-//우선 테스트를 위한 코드만 추가.
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    vec![]
+    let mut results = Vec::new();
+
+    for line in contents.lines() {
+        if line.contains(query) {
+            results.push(line);
+        }
+    }
+
+    results
 }
 
-//실패하는 테스트
+//테스트 코드
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -43,10 +50,10 @@ mod tests {
     fn one_result() {
         let query = "duct";
         let contents = "\
-    Rust:
-    safe, fast, productive.
-    Pick three.";
+        Rust:
+safe, fast, productive.
+Pick three.";
 
-        assert_eq!(vec!["safe, fast, productive"], search(query, contents));
+        assert_eq!(vec!["safe, fast, productive."], search(query, contents));
     }
 }
