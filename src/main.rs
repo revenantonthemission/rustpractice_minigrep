@@ -11,13 +11,15 @@ fn main() {
 
     //unwrap_or_else를 사용하면 Result가 Ok일 때 Ok 안의 값을 반환하고, Err일 때 클로저 안의 코드를 호출한다.
     let config = Config::build(&args).unwrap_or_else(|err| {
-        println!("Problem parsing arguments: {err}");
+        //표준 에러 출력을 위한 eprintln! 매크로
+        eprintln!("Problem parsing arguments: {err}");
         process::exit(1);
     });
 
     //실행 파트를 run으로 분리.
     if let Err(e) = minigrep::run(config) {
-        println!("Application error: {e}");
+        //표준 에러 출력을 위한 eprintln! 매크로
+        eprintln!("Application error: {e}");
         process::exit(1);
     }
 }
