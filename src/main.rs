@@ -6,14 +6,25 @@ fn main() {
     //cargo run [options] [-- args]이기 때문에 --는 따로 처리하지 않아도 env::args().collect()를 통해 수집될 수 있다.
     let args: Vec<String> = env::args().collect();
 
-    let query = &args[1];
-    let file_path = &args[2];
+    let config = parse_config(&args);
 
-    println!("Searching for {}", query);
-    println!("In file {}", file_path);
+    println!("Searching for {}", config.query);
+    println!("In file {}", config.file_path);
 
     //fs::read_to_string 함수를 사용해 파일을 열고 std::io::Result<String>을 반환한다. 실패시 expect를 사용한다.
     let contents = fs::read_to_string(file_path).expect("Should have been able to read the file");
 
     println!("With text:\n{contents}");
+}
+
+struct Config {
+    query: String,
+    file_path: String,
+}
+
+fn parse_config(args: &[String]) -> Config {
+    let query = &args[1].clone();
+    let file_path = &args[2].clone();
+
+    Config{query, file_path}
 }
