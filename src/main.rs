@@ -12,6 +12,7 @@ fn main() {
     println!("Searching for {}", query);
     println!("In file {}", file_path);
 
+    //fs::read_to_string 함수를 사용해 파일을 열고 std::io::Result<String>을 반환한다. 실패시 expect를 사용한다.
     let contents = fs::read_to_string(file_path).expect("Should have been able to read the file");
 
     println!("With text:\n{contents}");
