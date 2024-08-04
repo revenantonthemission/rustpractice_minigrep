@@ -10,12 +10,20 @@ pub struct Config {
 
 //Result를 통해 에러 처리
 impl Config {
-    pub fn build(args: &[String]) -> Result<Config, &str> {
-        if args.len() < 3 {
-            return Err("not enough arguments");
-        }
-        let query = args[1].clone();
-        let file_path = args[2].clone();
+    pub fn build(mut args: impl Iterator<Item=String>,) -> Result<Config, &'static str> {
+
+        //인덱싱 대신 Iterator의 트레이트 메서드를 사용함.
+        args.next();
+
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a query string"),
+        };
+
+        let file_path = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get a file path"),
+        };
 
         //환경 변수 검사
         let ignore_case = env::var("IGNORE_CASE").is_ok();
@@ -48,7 +56,10 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 }
 
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let mut results = Vec::new();
+    //반복자를 이용하면 중간에 가변 벡터를 만들 필요가 없다.
+    //함수형 프로그래밍에서는 더 명확한 코드를 만들기 위해 변경 가능한 상태의 양을 최소화하는 편을 선호한다.
+    
+    /*let mut results = Vec::new();
 
     for line in contents.lines() {
         if line.contains(query) {
@@ -56,7 +67,9 @@ pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
         }
     }
 
-    results
+    results*/
+
+    contents.lines().filter(|line| line.contains(query)).collect()
 }
 
 pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {

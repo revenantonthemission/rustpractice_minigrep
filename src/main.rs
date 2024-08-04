@@ -7,11 +7,17 @@ use minigrep::Config;
 
 fn main() {
     //cargo run [options] [-- args]이기 때문에 --는 따로 처리하지 않아도 env::args().collect()를 통해 수집될 수 있다.
-    let args: Vec<String> = env::args().collect();
+    //let args: Vec<String> = env::args().collect();
 
     //unwrap_or_else를 사용하면 Result가 Ok일 때 Ok 안의 값을 반환하고, Err일 때 클로저 안의 코드를 호출한다.
-    let config = Config::build(&args).unwrap_or_else(|err| {
+    //let config = Config::build(&args).unwrap_or_else(|err| {
         //표준 에러 출력을 위한 eprintln! 매크로
+        //eprintln!("Problem parsing arguments: {err}");
+        //process::exit(1);
+    //});
+
+    //반복자 사용하기
+    let config = Config::build(env::args()).unwrap_or_else(|err| {
         eprintln!("Problem parsing arguments: {err}");
         process::exit(1);
     });
